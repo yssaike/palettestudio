@@ -25,15 +25,16 @@ export const NeumorphicInstructions: React.FC = () => {
         </button>
       </div>
       
-      <div className="space-y-4">
-        <div className="flex items-center gap-4">
+      {/* Horizontal layout for controls */}
+      <div className="flex flex-wrap items-center gap-6">
+        <div className="flex items-center gap-3">
           <div className="px-4 py-2 bg-gradient-to-br from-gray-50 to-gray-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] rounded-xl font-helvetica text-sm font-medium text-gray-700">
             Space
           </div>
           <span className="font-helvetica text-sm text-gray-600">Next image</span>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="px-4 py-2 bg-gradient-to-br from-gray-50 to-gray-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] rounded-xl font-helvetica text-sm font-medium text-gray-700">
             Enter
           </div>
