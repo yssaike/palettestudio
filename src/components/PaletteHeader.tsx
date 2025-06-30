@@ -1,5 +1,5 @@
 import React from 'react';
-import { Palette, Info } from 'lucide-react';
+import { Palette, Sparkles } from 'lucide-react';
 import { ExportButton } from './ExportButton';
 import { ColorPalette } from '../types/palette';
 
@@ -18,20 +18,20 @@ export const PaletteHeader: React.FC<PaletteHeaderProps> = ({ palette, imageName
         </h2>
       </div>
       
-      <p className="font-helvetica text-gray-600 max-w-2xl mx-auto mb-6">
+      <p className="font-helvetica text-gray-600 max-w-2xl mx-auto mb-8">
         Click any color to copy its hex code. These colors are extracted using advanced 
         clustering algorithms to capture the essence of the image.
       </p>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div className="flex flex-col items-center gap-6">
         <ExportButton 
           palette={palette} 
           imageName={imageName}
         />
         
-        <div className="flex items-center gap-2 text-sm text-gray-500 font-helvetica">
-          <Info size={16} />
-          <span>Compatible with Figma color styles</span>
+        <div className="flex items-center gap-2 text-sm text-gray-500 font-helvetica bg-gray-50 px-4 py-2 rounded-full">
+          <Sparkles size={16} />
+          <span>Complete design system with colors, typography & effects</span>
         </div>
       </div>
     </div>

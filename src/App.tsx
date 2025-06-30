@@ -4,6 +4,7 @@ import { ImageDisplay } from './components/ImageDisplay';
 import { Instructions } from './components/Instructions';
 import { PaletteSection } from './components/PaletteSection';
 import { SemanticColors } from './components/SemanticColors';
+import { PaletteHeader } from './components/PaletteHeader';
 import { extractColorsFromImage } from './utils/colorExtractor';
 import { natureImages } from './data/images';
 import type { ColorPalette, NatureImage } from './types/palette';
@@ -111,18 +112,10 @@ function App() {
         {/* Palette Display */}
         {palette && (
           <div className="mt-16">
-            <div className="text-center mb-12">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Palette className="text-primary-600" size={28} />
-                <h2 className="font-bodoni text-3xl font-bold text-gray-900">
-                  Generated Palette
-                </h2>
-              </div>
-              <p className="font-helvetica text-gray-600 max-w-2xl mx-auto">
-                Click any color to copy its hex code. These colors are extracted using advanced 
-                clustering algorithms to capture the essence of the image.
-              </p>
-            </div>
+            <PaletteHeader 
+              palette={palette} 
+              imageName={currentImage.alt}
+            />
 
             <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
               <PaletteSection
