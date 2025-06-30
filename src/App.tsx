@@ -5,6 +5,7 @@ import { NeumorphicInstructions } from './components/NeumorphicInstructions';
 import { NeumorphicPaletteSection } from './components/NeumorphicPaletteSection';
 import { NeumorphicExportButton } from './components/NeumorphicExportButton';
 import { NeumorphicCard } from './components/NeumorphicCard';
+import { ImageSelector } from './components/ImageSelector';
 import { SemanticColors } from './components/SemanticColors';
 import { extractColorsFromImage } from './utils/colorExtractor';
 import { natureImages } from './data/images';
@@ -16,6 +17,7 @@ function App() {
   const [palette, setPalette] = useState<ColorPalette | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isCustomImage, setIsCustomImage] = useState(false);
 
   // Shuffle images on initial load
   useEffect(() => {
@@ -31,7 +33,22 @@ function App() {
     setCurrentImage(natureImages[nextIndex]);
     setPalette(null);
     setImageLoaded(false);
+    setIsCustomImage(false);
   }, [currentImageIndex]);
+
+  const handleImageSelect = useCallback((imageUrl: string, imageName: string, isCustom = false) => {
+    const customImage: NatureImage = {
+      id: 'custom',
+      url: imageUrl,
+      alt: imageName,
+      photographer: 'You'
+    };
+    
+    setCurrentImage(customImage);
+    setPalette(null);
+    setImageLoaded(false);
+    setIsCustomImage(isCustom);
+  }, []);
 
   const generatePalette = useCallback(async () => {
     if (!imageLoaded || isGenerating) return;
@@ -99,13 +116,22 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 gap-8">
-          {/* Image Section - Now full width */}
-          <div className="w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Image Section */}
+          <div className="lg:col-span-2">
             <NeumorphicImageDisplay
               image={currentImage}
               onImageLoad={handleImageLoad}
               isGenerating={isGenerating}
+            />
+          </div>
+
+          {/* Image Selector */}
+          <div className="lg:col-span-1">
+            <ImageSelector
+              currentImage={currentImage}
+              onImageSelect={handleImageSelect}
+              onNextImage={nextImage}
             />
           </div>
         </div>
@@ -187,7 +213,10 @@ function App() {
         <footer className="mt-16 text-center py-8">
           <NeumorphicCard className="inline-block px-6 py-4 rounded-2xl">
             <p className="font-helvetica text-sm text-gray-500">
-              Images provided by talented photographers on Pexels • Neuromorphic design by Palette Studio
+              {isCustomImage 
+                ? 'Custom image uploaded • Neuromorphic design by Palette Studio'
+                : 'Images provided by talented photographers on Pexels • Neuromorphic design by Palette Studio'
+              }
             </p>
           </NeumorphicCard>
         </footer>
