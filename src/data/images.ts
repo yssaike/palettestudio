@@ -60,5 +60,24 @@ export const natureImages: NatureImage[] = [
     url: 'https://images.pexels.com/photos/1482802/pexels-photo-1482802.jpeg?auto=compress&cs=tinysrgb&w=1200',
     alt: 'Cherry blossoms in spring garden',
     photographer: 'Jill Wellington'
+  },
+  // Additional high-quality neuromorphic showcase images
+  {
+    id: '11',
+    url: 'https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Misty forest with soft morning light',
+    photographer: 'Johannes Plenio'
+  },
+  {
+    id: '12',
+    url: 'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Serene lake with mountain reflections',
+    photographer: 'Simon Berger'
+  },
+  {
+    id: '13',
+    url: 'https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    alt: 'Dramatic canyon with layered rock formations',
+    photographer: 'Tom Fisk'
   }
 ];

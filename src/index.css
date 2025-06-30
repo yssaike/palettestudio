@@ -8,6 +8,11 @@
   html {
     font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  
+  body {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+    min-height: 100vh;
+  }
 }
 
 @layer components {
@@ -19,22 +24,65 @@
   .font-helvetica {
     font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  
+  /* Neuromorphic base styles */
+  .neumorphic {
+    background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+    box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .neumorphic-pressed {
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  }
+  
+  .neumorphic-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .neumorphic-hover:hover {
+    box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.5), -10px -10px 20px rgba(255, 255, 255, 0.85);
+    transform: translateY(-2px);
+  }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with neuromorphic styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+  border-radius: 6px;
+  box-shadow: inset 2px 2px 4px rgba(163, 177, 198, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: linear-gradient(145deg, #cbd5e1, #94a3b8);
+  border-radius: 6px;
+  box-shadow: 2px 2px 4px rgba(163, 177, 198, 0.4), -2px -2px 4px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: linear-gradient(145deg, #94a3b8, #64748b);
+  box-shadow: 3px 3px 6px rgba(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.8);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: inherit;
 }
