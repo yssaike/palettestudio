@@ -7,6 +7,7 @@
 @layer base {
   html {
     font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+    scroll-behavior: smooth; /* Native smooth scrolling for modern browsers */
   }
   
   body {
@@ -23,6 +24,19 @@
   
   .font-helvetica {
     font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  /* Screen reader only class for accessibility announcements */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   
   /* Neuromorphic base styles */
@@ -85,4 +99,24 @@ button:focus-visible,
 ::selection {
   background: rgba(59, 130, 246, 0.2);
   color: inherit;
+}
+
+/* Ensure smooth scrolling works across browsers */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

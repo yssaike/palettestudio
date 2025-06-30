@@ -50,6 +50,63 @@ function App() {
     setIsCustomImage(isCustom);
   }, []);
 
+  // Smooth scroll to colors section with cross-browser compatibility
+  const scrollToColors = useCallback(() => {
+    const colorsSection = document.getElementById('colors');
+    if (!colorsSection) return;
+
+    // Check if browser supports smooth scrolling
+    const supportsNativeSmoothScroll = 'scrollBehavior' in document.documentElement.style;
+    
+    if (supportsNativeSmoothScroll) {
+      // Use native smooth scrolling
+      colorsSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    } else {
+      // Fallback for older browsers with custom smooth scroll
+      const startPosition = window.pageYOffset;
+      const targetPosition = colorsSection.offsetTop - 80; // 80px offset for better visual spacing
+      const distance = targetPosition - startPosition;
+      const duration = 500; // 500ms duration
+      let startTime: number | null = null;
+
+      const easeInOutCubic = (t: number): number => {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+      };
+
+      const animateScroll = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const easedProgress = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * easedProgress);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        }
+      };
+
+      requestAnimationFrame(animateScroll);
+    }
+
+    // Announce to screen readers for accessibility
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'sr-only';
+    announcement.textContent = 'Scrolled to color palette section';
+    document.body.appendChild(announcement);
+    
+    // Clean up announcement after screen readers have processed it
+    setTimeout(() => {
+      document.body.removeChild(announcement);
+    }, 1000);
+  }, []);
+
   const generatePalette = useCallback(async () => {
     if (!imageLoaded || isGenerating) return;
     
@@ -57,12 +114,18 @@ function App() {
     try {
       const generatedPalette = await extractColorsFromImage(currentImage.url);
       setPalette(generatedPalette);
+      
+      // Scroll to colors section after palette is generated
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        scrollToColors();
+      }, 100);
     } catch (error) {
       console.error('Failed to generate palette:', error);
     } finally {
       setIsGenerating(false);
     }
-  }, [currentImage.url, imageLoaded, isGenerating]);
+  }, [currentImage.url, imageLoaded, isGenerating, scrollToColors]);
 
   // Keyboard event handlers
   useEffect(() => {
@@ -78,14 +141,20 @@ function App() {
           break;
         case 'Enter':
           event.preventDefault();
-          generatePalette();
+          if (palette) {
+            // If palette already exists, just scroll to it
+            scrollToColors();
+          } else {
+            // Generate palette and scroll will happen automatically
+            generatePalette();
+          }
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [nextImage, generatePalette]);
+  }, [nextImage, generatePalette, palette, scrollToColors]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -138,7 +207,7 @@ function App() {
 
         {/* Palette Display */}
         {palette && (
-          <div className="mt-16">
+          <div id="colors" className="mt-16" role="region" aria-label="Generated color palette">
             <div className="text-center mb-12">
               <NeumorphicCard className="inline-block px-8 py-6 rounded-3xl mb-8">
                 <div className="flex items-center justify-center gap-4 mb-4">
