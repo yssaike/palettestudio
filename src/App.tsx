@@ -93,42 +93,20 @@ function App() {
             </p>
           </NeumorphicCard>
           
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
-            <NeumorphicCard className="px-4 py-2 rounded-2xl">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                  <span className="text-xs font-helvetica font-bold text-gray-700">⎵</span>
-                </div>
-                <span className="font-helvetica text-sm text-gray-600">New images</span>
-              </div>
-            </NeumorphicCard>
-            
-            <NeumorphicCard className="px-4 py-2 rounded-2xl">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                  <span className="text-xs font-helvetica font-bold text-gray-700">↵</span>
-                </div>
-                <span className="font-helvetica text-sm text-gray-600">Generate palettes</span>
-              </div>
-            </NeumorphicCard>
-          </div>
+          {/* Controls Section - Moved from sidebar */}
+          <NeumorphicInstructions />
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Image Section */}
-          <div className="lg:col-span-8">
+        <div className="grid grid-cols-1 gap-8">
+          {/* Image Section - Now full width */}
+          <div className="w-full">
             <NeumorphicImageDisplay
               image={currentImage}
               onImageLoad={handleImageLoad}
               isGenerating={isGenerating}
             />
-          </div>
-
-          {/* Instructions */}
-          <div className="lg:col-span-4">
-            <NeumorphicInstructions />
           </div>
         </div>
 
