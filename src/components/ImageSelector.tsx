@@ -26,62 +26,69 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
   };
 
   return (
-    <div className={className}>
-      <NeumorphicCard className="p-6 rounded-3xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
+    <div className={`w-full ${className}`}>
+      <NeumorphicCard className="p-4 sm:p-6 rounded-3xl">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center flex-shrink-0">
             <Camera className="text-primary-600" size={18} />
           </div>
-          <h3 className="font-bodoni text-xl font-semibold text-gray-800">
+          <h3 className="font-bodoni text-lg sm:text-xl font-semibold text-gray-800 leading-tight">
             Choose Your Image
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Use Curated Images */}
+        {/* Action Buttons */}
+        <div className="space-y-3 mb-4 sm:mb-6">
+          {/* Curated Images Button */}
           <NeumorphicButton
             onClick={onNextImage}
             variant="secondary"
             size="lg"
-            className="flex items-center justify-center gap-3 h-16"
+            className="w-full flex items-center justify-start gap-3 h-auto py-4 px-4 text-left"
           >
-            <Shuffle size={20} />
-            <div className="text-left">
-              <div className="font-medium">Curated Images</div>
-              <div className="text-xs opacity-75">Professional nature photos</div>
+            <div className="flex-shrink-0">
+              <Shuffle size={20} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-medium text-sm sm:text-base leading-tight">Curated Images</div>
+              <div className="text-xs opacity-75 mt-1 leading-tight">Professional nature photos</div>
             </div>
           </NeumorphicButton>
 
-          {/* Upload Custom Image */}
+          {/* Upload Image Button */}
           <NeumorphicButton
             onClick={() => setShowUpload(!showUpload)}
             variant="primary"
             size="lg"
-            className="flex items-center justify-center gap-3 h-16"
+            className="w-full flex items-center justify-start gap-3 h-auto py-4 px-4 text-left"
           >
-            <Upload size={20} />
-            <div className="text-left">
-              <div className="font-medium">Upload Image</div>
-              <div className="text-xs opacity-75">Use your own photo</div>
+            <div className="flex-shrink-0">
+              <Upload size={20} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-medium text-sm sm:text-base leading-tight">Upload Image</div>
+              <div className="text-xs opacity-75 mt-1 leading-tight">Use your own photo</div>
             </div>
           </NeumorphicButton>
         </div>
 
         {/* Current Image Info */}
-        <div className="mt-6 pt-4 border-t border-gray-200/50">
+        <div className="pt-4 border-t border-gray-200/50">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl overflow-hidden">
+            <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
               <img
                 src={currentImage.url}
                 alt={currentImage.alt}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
-            <div>
-              <p className="font-helvetica text-sm font-medium text-gray-800">
+            <div className="flex-1 min-w-0">
+              <p className="font-helvetica text-sm font-medium text-gray-800 truncate">
                 Current: {currentImage.alt}
               </p>
-              <p className="font-helvetica text-xs text-gray-500">
+              <p className="font-helvetica text-xs text-gray-500 truncate">
                 by {currentImage.photographer}
               </p>
             </div>
@@ -91,7 +98,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({
 
       {/* Upload Section */}
       {showUpload && (
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <ImageUpload onImageSelect={handleCustomImageSelect} />
         </div>
       )}

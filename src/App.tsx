@@ -163,31 +163,31 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100">
       {/* Header */}
-      <header className="w-full py-12 px-4">
+      <header className="w-full py-8 sm:py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <NeumorphicCard className="inline-block px-8 py-6 rounded-3xl mb-6">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                <Sparkles className="text-primary-600" size={24} />
+          <NeumorphicCard className="inline-block px-6 sm:px-8 py-4 sm:py-6 rounded-3xl mb-4 sm:mb-6">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                <Sparkles className="text-primary-600" size={20} />
               </div>
-              <h1 className="font-bodoni text-4xl md:text-5xl font-bold text-gray-900">
+              <h1 className="font-bodoni text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Palette Studio
               </h1>
             </div>
-            <p className="font-helvetica text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="font-helvetica text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Discover beautiful color palettes from nature's finest moments with neuromorphic design
             </p>
           </NeumorphicCard>
           
-          {/* Controls Section - Moved from sidebar */}
+          {/* Controls Section */}
           <NeumorphicInstructions />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto px-4 pb-8 sm:pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Image Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-2 lg:order-1">
             <NeumorphicImageDisplay
               image={currentImage}
               onImageLoad={handleImageLoad}
@@ -196,7 +196,7 @@ function App() {
           </div>
 
           {/* Image Selector */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 order-1 lg:order-2">
             <ImageSelector
               currentImage={currentImage}
               onImageSelect={handleImageSelect}
@@ -207,19 +207,19 @@ function App() {
 
         {/* Palette Display */}
         {palette && (
-          <div id="colors" className="mt-16" role="region" aria-label="Generated color palette">
-            <div className="text-center mb-12">
-              <NeumorphicCard className="inline-block px-8 py-6 rounded-3xl mb-8">
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                    <Palette className="text-primary-600" size={20} />
+          <div id="colors" className="mt-12 sm:mt-16" role="region" aria-label="Generated color palette">
+            <div className="text-center mb-8 sm:mb-12">
+              <NeumorphicCard className="inline-block px-6 sm:px-8 py-4 sm:py-6 rounded-3xl mb-6 sm:mb-8">
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                    <Palette className="text-primary-600" size={18} />
                   </div>
-                  <h2 className="font-bodoni text-3xl font-bold text-gray-900">
+                  <h2 className="font-bodoni text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
                     Generated Palette
                   </h2>
                 </div>
                 
-                <p className="font-helvetica text-gray-600 max-w-2xl mx-auto mb-6">
+                <p className="font-helvetica text-sm sm:text-base text-gray-600 max-w-2xl mx-auto mb-4 sm:mb-6 leading-relaxed">
                   Click any color to copy its hex code. These colors are extracted using advanced 
                   clustering algorithms to capture the essence of the image.
                 </p>
@@ -230,9 +230,9 @@ function App() {
                 />
               </NeumorphicCard>
               
-              <NeumorphicCard className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl">
-                <Sparkles className="text-primary-600" size={16} />
-                <span className="font-helvetica text-sm text-gray-600">
+              <NeumorphicCard className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl">
+                <Sparkles className="text-primary-600" size={14} />
+                <span className="font-helvetica text-xs sm:text-sm text-gray-600">
                   Complete design system with neuromorphic styling
                 </span>
               </NeumorphicCard>
@@ -260,16 +260,16 @@ function App() {
                 icon={<Crown className="text-primary-600" size={18} />}
               />
               
-              <NeumorphicCard className="p-8 rounded-3xl">
-                <div className="flex items-center gap-3 mb-6">
+              <NeumorphicCard className="p-6 sm:p-8 rounded-3xl">
+                <div className="flex items-center gap-3 mb-4 sm:mb-6">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
                     <Shield className="text-primary-600" size={18} />
                   </div>
-                  <h3 className="font-bodoni text-xl font-semibold text-gray-800">
+                  <h3 className="font-bodoni text-lg sm:text-xl font-semibold text-gray-800">
                     Semantic Colors
                   </h3>
                 </div>
-                <p className="font-helvetica text-sm text-gray-600 mb-6 ml-11">
+                <p className="font-helvetica text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 ml-11">
                   Functional colors for UI states and messaging
                 </p>
                 <SemanticColors semantic={palette.semantic} />
@@ -279,9 +279,9 @@ function App() {
         )}
 
         {/* Footer */}
-        <footer className="mt-16 text-center py-8">
-          <NeumorphicCard className="inline-block px-6 py-4 rounded-2xl">
-            <p className="font-helvetica text-sm text-gray-500">
+        <footer className="mt-12 sm:mt-16 text-center py-6 sm:py-8">
+          <NeumorphicCard className="inline-block px-4 sm:px-6 py-3 sm:py-4 rounded-2xl">
+            <p className="font-helvetica text-xs sm:text-sm text-gray-500 leading-relaxed">
               {isCustomImage 
                 ? 'Custom image uploaded • Neuromorphic design by Palette Studio'
                 : 'Images provided by talented photographers on Pexels • Neuromorphic design by Palette Studio'

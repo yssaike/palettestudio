@@ -29,7 +29,7 @@ export const NeumorphicButton: React.FC<NeumorphicButtonProps> = ({
   const sizeStyles = {
     sm: 'px-4 py-2 text-sm rounded-lg',
     md: 'px-6 py-3 text-base rounded-xl',
-    lg: 'px-8 py-4 text-lg rounded-2xl'
+    lg: 'px-6 py-3 text-base rounded-2xl'
   };
 
   const baseStyles = `
@@ -37,11 +37,12 @@ export const NeumorphicButton: React.FC<NeumorphicButtonProps> = ({
     border border-white/60
     transition-all duration-200 ease-out
     focus:outline-none focus:ring-4 focus:ring-blue-200/50
+    w-full
   `;
 
   const shadowStyles = isPressed
-    ? 'shadow-[inset_2px_2px_4px_rgba(163,177,198,0.4),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] scale-[0.96]'
-    : 'shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.8)] hover:shadow-[4px_4px_8px_rgba(163,177,198,0.4),-4px_-4px_8px_rgba(255,255,255,0.9)] hover:scale-[1.02]';
+    ? 'shadow-[inset_2px_2px_4px_rgba(163,177,198,0.4),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] scale-[0.98]'
+    : 'shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.8)] hover:shadow-[4px_4px_8px_rgba(163,177,198,0.4),-4px_-4px_8px_rgba(255,255,255,0.9)] hover:scale-[1.01]';
 
   const disabledStyles = disabled
     ? 'opacity-50 cursor-not-allowed'
@@ -59,9 +60,11 @@ export const NeumorphicButton: React.FC<NeumorphicButtonProps> = ({
       `}
       onClick={onClick}
       disabled={disabled}
-      onMouseDown={() => setIsPressed(true)}
+      onMouseDown={() => !disabled && setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
+      onTouchStart={() => !disabled && setIsPressed(true)}
+      onTouchEnd={() => setIsPressed(false)}
     >
       {children}
     </button>
