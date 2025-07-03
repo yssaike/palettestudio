@@ -39,7 +39,7 @@
     border: 0;
   }
   
-  /* Neuromorphic base styles */
+  /* Enhanced Neuromorphic base styles with responsive scaling */
   .neumorphic {
     background: linear-gradient(145deg, #f8fafc, #e2e8f0);
     box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.8);
@@ -58,9 +58,26 @@
     box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.5), -10px -10px 20px rgba(255, 255, 255, 0.85);
     transform: translateY(-2px);
   }
+
+  /* Enhanced responsive scroll margin utilities */
+  .scroll-mt-16 {
+    scroll-margin-top: 4rem;
+  }
+  
+  .scroll-mt-20 {
+    scroll-margin-top: 5rem;
+  }
+  
+  .scroll-mt-24 {
+    scroll-margin-top: 6rem;
+  }
+  
+  .scroll-mt-28 {
+    scroll-margin-top: 7rem;
+  }
 }
 
-/* Custom scrollbar with neuromorphic styling */
+/* Enhanced custom scrollbar with neuromorphic styling */
 ::-webkit-scrollbar {
   width: 12px;
 }
@@ -83,16 +100,17 @@
   box-shadow: 3px 3px 6px rgba(163, 177, 198, 0.5), -3px -3px 6px rgba(255, 255, 255, 0.8);
 }
 
-/* Smooth transitions for all interactive elements */
+/* Enhanced smooth transitions for all interactive elements */
 * {
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-/* Focus styles for accessibility */
+/* Enhanced focus styles for accessibility */
 button:focus-visible,
 [role="button"]:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
 }
 
 /* Selection styling */
@@ -101,10 +119,33 @@ button:focus-visible,
   color: inherit;
 }
 
-/* Ensure smooth scrolling works across browsers */
+/* Enhanced smooth scrolling with viewport awareness */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+  
+  /* Enhanced scroll padding for better positioning */
+  html {
+    scroll-padding-top: 2rem;
+  }
+  
+  @media (min-width: 640px) {
+    html {
+      scroll-padding-top: 3rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 4rem;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    html {
+      scroll-padding-top: 5rem;
+    }
   }
 }
 
@@ -118,5 +159,50 @@ button:focus-visible,
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Enhanced responsive utilities for larger screens */
+@media (min-width: 1536px) {
+  .container-2xl {
+    max-width: 1536px;
+  }
+}
+
+@media (min-width: 1792px) {
+  .container-3xl {
+    max-width: 1792px;
+  }
+}
+
+/* Enhanced viewport-specific optimizations */
+@media (min-width: 2048px) {
+  .text-8xl {
+    font-size: 6rem;
+    line-height: 1;
+  }
+  
+  .text-9xl {
+    font-size: 8rem;
+    line-height: 1;
+  }
+}
+
+/* Enhanced touch target sizes for mobile */
+@media (max-width: 640px) {
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Enhanced high-DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .neumorphic {
+    box-shadow: 
+      4px 4px 8px rgba(163, 177, 198, 0.6), 
+      -4px -4px 8px rgba(255, 255, 255, 0.8),
+      inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.9);
   }
 }

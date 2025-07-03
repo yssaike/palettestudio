@@ -50,61 +50,97 @@ function App() {
     setIsCustomImage(isCustom);
   }, []);
 
-  // Smooth scroll to colors section with cross-browser compatibility
+  // Enhanced smooth scroll with viewport awareness and focus management
   const scrollToColors = useCallback(() => {
     const colorsSection = document.getElementById('colors');
     if (!colorsSection) return;
 
+    // Get viewport dimensions for responsive offset calculation
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    
+    // Calculate responsive offset based on screen size
+    const getResponsiveOffset = () => {
+      if (viewportWidth >= 1536) return 120; // 2xl screens
+      if (viewportWidth >= 1280) return 100; // xl screens
+      if (viewportWidth >= 1024) return 80;  // lg screens
+      if (viewportWidth >= 768) return 60;   // md screens
+      return 40; // sm and mobile screens
+    };
+
+    const offset = getResponsiveOffset();
+    
     // Check if browser supports smooth scrolling
     const supportsNativeSmoothScroll = 'scrollBehavior' in document.documentElement.style;
     
     if (supportsNativeSmoothScroll) {
-      // Use native smooth scrolling
-      colorsSection.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
+      // Use native smooth scrolling with enhanced options
+      const targetPosition = colorsSection.offsetTop - offset;
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
       });
+      
+      // Focus management for accessibility
+      setTimeout(() => {
+        colorsSection.focus({ preventScroll: true });
+        colorsSection.setAttribute('tabindex', '-1');
+      }, 600);
     } else {
-      // Fallback for older browsers with custom smooth scroll
+      // Enhanced fallback with easing and viewport awareness
       const startPosition = window.pageYOffset;
-      const targetPosition = colorsSection.offsetTop - 80; // 80px offset for better visual spacing
+      const targetPosition = colorsSection.offsetTop - offset;
       const distance = targetPosition - startPosition;
-      const duration = 500; // 500ms duration
+      
+      // Adaptive duration based on distance and viewport
+      const baseDuration = 600;
+      const maxDuration = 1000;
+      const minDuration = 300;
+      const distanceFactor = Math.abs(distance) / viewportHeight;
+      const duration = Math.min(maxDuration, Math.max(minDuration, baseDuration * distanceFactor));
+      
       let startTime: number | null = null;
 
-      const easeInOutCubic = (t: number): number => {
-        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+      // Enhanced easing function for smoother animation
+      const easeInOutQuart = (t: number): number => {
+        return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
       };
 
       const animateScroll = (currentTime: number) => {
         if (startTime === null) startTime = currentTime;
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
-        const easedProgress = easeInOutCubic(progress);
+        const easedProgress = easeInOutQuart(progress);
         
         window.scrollTo(0, startPosition + distance * easedProgress);
         
         if (progress < 1) {
           requestAnimationFrame(animateScroll);
+        } else {
+          // Focus management after animation completes
+          colorsSection.focus({ preventScroll: true });
+          colorsSection.setAttribute('tabindex', '-1');
         }
       };
 
       requestAnimationFrame(animateScroll);
     }
 
-    // Announce to screen readers for accessibility
+    // Enhanced accessibility announcement
     const announcement = document.createElement('div');
     announcement.setAttribute('aria-live', 'polite');
     announcement.setAttribute('aria-atomic', 'true');
     announcement.className = 'sr-only';
-    announcement.textContent = 'Scrolled to color palette section';
+    announcement.textContent = 'Navigated to generated color palette section';
     document.body.appendChild(announcement);
     
-    // Clean up announcement after screen readers have processed it
+    // Clean up announcement
     setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
+      if (document.body.contains(announcement)) {
+        document.body.removeChild(announcement);
+      }
+    }, 1500);
   }, []);
 
   const generatePalette = useCallback(async () => {
@@ -115,11 +151,10 @@ function App() {
       const generatedPalette = await extractColorsFromImage(currentImage.url);
       setPalette(generatedPalette);
       
-      // Scroll to colors section after palette is generated
-      // Small delay to ensure DOM is updated
+      // Enhanced scroll timing with loading state consideration
       setTimeout(() => {
         scrollToColors();
-      }, 100);
+      }, 150);
     } catch (error) {
       console.error('Failed to generate palette:', error);
     } finally {
@@ -127,10 +162,18 @@ function App() {
     }
   }, [currentImage.url, imageLoaded, isGenerating, scrollToColors]);
 
-  // Keyboard event handlers
+  // Enhanced keyboard event handlers with better UX
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      // Ignore if user is typing in input fields
+      if (event.target instanceof HTMLInputElement || 
+          event.target instanceof HTMLTextAreaElement ||
+          event.target instanceof HTMLSelectElement) {
+        return;
+      }
+      
+      // Ignore if any modifier keys are pressed
+      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
         return;
       }
       
@@ -142,10 +185,10 @@ function App() {
         case 'Enter':
           event.preventDefault();
           if (palette) {
-            // If palette already exists, just scroll to it
+            // If palette exists, scroll to it with enhanced focus
             scrollToColors();
-          } else {
-            // Generate palette and scroll will happen automatically
+          } else if (imageLoaded && !isGenerating) {
+            // Generate palette and auto-scroll
             generatePalette();
           }
           break;
@@ -154,7 +197,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [nextImage, generatePalette, palette, scrollToColors]);
+  }, [nextImage, generatePalette, palette, scrollToColors, imageLoaded, isGenerating]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -162,32 +205,33 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="w-full py-8 sm:py-12 px-4">
+      {/* Enhanced Header with Responsive Scaling */}
+      <header className="w-full py-6 sm:py-8 md:py-12 lg:py-16 xl:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <NeumorphicCard className="inline-block px-6 sm:px-8 py-4 sm:py-6 rounded-3xl mb-4 sm:mb-6">
-            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                <Sparkles className="text-primary-600" size={20} />
+          <NeumorphicCard className="inline-block px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3 sm:py-4 md:py-6 lg:py-8 rounded-2xl sm:rounded-3xl lg:rounded-4xl mb-4 sm:mb-6 lg:mb-8">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 mb-2 sm:mb-3 md:mb-4 lg:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                <Sparkles className="text-primary-600" size={16} />
               </div>
-              <h1 className="font-bodoni text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              <h1 className="font-bodoni text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold text-gray-900 leading-tight">
                 Palette Studio
               </h1>
             </div>
-            <p className="font-helvetica text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            <p className="font-helvetica text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-600 max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto leading-relaxed">
               Discover beautiful color palettes from nature's finest moments with neuromorphic design
             </p>
           </NeumorphicCard>
           
-          {/* Controls Section */}
+          {/* Enhanced Controls Section */}
           <NeumorphicInstructions />
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 pb-8 sm:pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Image Section */}
-          <div className="lg:col-span-2 order-2 lg:order-1">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12 lg:pb-16 xl:pb-20">
+        {/* Enhanced Responsive Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 xl:gap-10 2xl:gap-12">
+          {/* Image Section - Responsive Scaling */}
+          <div className="lg:col-span-2 xl:col-span-3 order-2 lg:order-1">
             <NeumorphicImageDisplay
               image={currentImage}
               onImageLoad={handleImageLoad}
@@ -195,8 +239,8 @@ function App() {
             />
           </div>
 
-          {/* Image Selector */}
-          <div className="lg:col-span-1 order-1 lg:order-2">
+          {/* Image Selector - Enhanced Responsive Behavior */}
+          <div className="lg:col-span-1 xl:col-span-1 order-1 lg:order-2">
             <ImageSelector
               currentImage={currentImage}
               onImageSelect={handleImageSelect}
@@ -205,21 +249,27 @@ function App() {
           </div>
         </div>
 
-        {/* Palette Display */}
+        {/* Enhanced Palette Display with Focus Management */}
         {palette && (
-          <div id="colors" className="mt-12 sm:mt-16" role="region" aria-label="Generated color palette">
-            <div className="text-center mb-8 sm:mb-12">
-              <NeumorphicCard className="inline-block px-6 sm:px-8 py-4 sm:py-6 rounded-3xl mb-6 sm:mb-8">
-                <div className="flex items-center justify-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                    <Palette className="text-primary-600" size={18} />
+          <div 
+            id="colors" 
+            className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 scroll-mt-16 sm:scroll-mt-20 lg:scroll-mt-24 xl:scroll-mt-28" 
+            role="region" 
+            aria-label="Generated color palette"
+            tabIndex={-1}
+          >
+            <div className="text-center mb-6 sm:mb-8 lg:mb-12 xl:mb-16">
+              <NeumorphicCard className="inline-block px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3 sm:py-4 md:py-6 lg:py-8 rounded-2xl sm:rounded-3xl lg:rounded-4xl mb-4 sm:mb-6 lg:mb-8">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 mb-2 sm:mb-3 md:mb-4 lg:mb-6">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_2px_2px_4px_rgba(163,177,198,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                    <Palette className="text-primary-600" size={14} />
                   </div>
-                  <h2 className="font-bodoni text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                  <h2 className="font-bodoni text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight">
                     Generated Palette
                   </h2>
                 </div>
                 
-                <p className="font-helvetica text-sm sm:text-base text-gray-600 max-w-2xl mx-auto mb-4 sm:mb-6 leading-relaxed">
+                <p className="font-helvetica text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto mb-3 sm:mb-4 md:mb-6 lg:mb-8 leading-relaxed">
                   Click any color to copy its hex code. These colors are extracted using advanced 
                   clustering algorithms to capture the essence of the image.
                 </p>
@@ -230,46 +280,47 @@ function App() {
                 />
               </NeumorphicCard>
               
-              <NeumorphicCard className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl">
-                <Sparkles className="text-primary-600" size={14} />
-                <span className="font-helvetica text-xs sm:text-sm text-gray-600">
+              <NeumorphicCard className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl">
+                <Sparkles className="text-primary-600" size={12} />
+                <span className="font-helvetica text-xs sm:text-sm md:text-base text-gray-600">
                   Complete design system with neuromorphic styling
                 </span>
               </NeumorphicCard>
             </div>
 
-            <div className="space-y-6">
+            {/* Enhanced Palette Sections with Responsive Spacing */}
+            <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
               <NeumorphicPaletteSection
                 title="Primary Colors"
                 colors={palette.primary}
                 description="Dominant colors that define the image's character"
-                icon={<Star className="text-primary-600" size={18} />}
+                icon={<Star className="text-primary-600" size={16} />}
               />
               
               <NeumorphicPaletteSection
                 title="Secondary Colors"
                 colors={palette.secondary}
                 description="Supporting colors with high saturation and vibrancy"
-                icon={<Zap className="text-primary-600" size={18} />}
+                icon={<Zap className="text-primary-600" size={16} />}
               />
               
               <NeumorphicPaletteSection
                 title="Brand Colors"
                 colors={palette.brand}
                 description="Balanced colors perfect for branding and design"
-                icon={<Crown className="text-primary-600" size={18} />}
+                icon={<Crown className="text-primary-600" size={16} />}
               />
               
-              <NeumorphicCard className="p-6 sm:p-8 rounded-3xl">
-                <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
-                    <Shield className="text-primary-600" size={18} />
+              <NeumorphicCard className="p-4 sm:p-6 lg:p-8 xl:p-10 rounded-2xl sm:rounded-3xl">
+                <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 shadow-[inset_1px_1px_2px_rgba(163,177,198,0.3),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] flex items-center justify-center">
+                    <Shield className="text-primary-600" size={14} />
                   </div>
-                  <h3 className="font-bodoni text-lg sm:text-xl font-semibold text-gray-800">
+                  <h3 className="font-bodoni text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-800">
                     Semantic Colors
                   </h3>
                 </div>
-                <p className="font-helvetica text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 ml-11">
+                <p className="font-helvetica text-xs sm:text-sm md:text-base text-gray-600 mb-3 sm:mb-4 lg:mb-6 ml-8 sm:ml-11">
                   Functional colors for UI states and messaging
                 </p>
                 <SemanticColors semantic={palette.semantic} />
@@ -278,10 +329,10 @@ function App() {
           </div>
         )}
 
-        {/* Footer */}
-        <footer className="mt-12 sm:mt-16 text-center py-6 sm:py-8">
-          <NeumorphicCard className="inline-block px-4 sm:px-6 py-3 sm:py-4 rounded-2xl">
-            <p className="font-helvetica text-xs sm:text-sm text-gray-500 leading-relaxed">
+        {/* Enhanced Footer with Responsive Scaling */}
+        <footer className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 text-center py-4 sm:py-6 lg:py-8">
+          <NeumorphicCard className="inline-block px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl">
+            <p className="font-helvetica text-xs sm:text-sm md:text-base text-gray-500 leading-relaxed">
               {isCustomImage 
                 ? 'Custom image uploaded • Neuromorphic design by Palette Studio'
                 : 'Images provided by talented photographers on Pexels • Neuromorphic design by Palette Studio'
