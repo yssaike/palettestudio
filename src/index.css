@@ -62,18 +62,28 @@
   /* Enhanced responsive scroll margin utilities */
   .scroll-mt-16 {
     scroll-margin-top: 4rem;
+    scroll-snap-margin-top: 4rem;
   }
   
   .scroll-mt-20 {
     scroll-margin-top: 5rem;
+    scroll-snap-margin-top: 5rem;
   }
   
   .scroll-mt-24 {
     scroll-margin-top: 6rem;
+    scroll-snap-margin-top: 6rem;
   }
   
   .scroll-mt-28 {
     scroll-margin-top: 7rem;
+    scroll-snap-margin-top: 7rem;
+  }
+
+  /* Dynamic scroll margins for precise positioning */
+  .scroll-mt-dynamic {
+    scroll-margin-top: clamp(1rem, 10vh, 8rem);
+    scroll-snap-margin-top: clamp(1rem, 10vh, 8rem);
   }
 }
 
@@ -123,36 +133,32 @@ button:focus-visible,
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: clamp(20px, 10vh, 120px); /* Dynamic scroll padding */
   }
   
-  /* Enhanced scroll padding for better positioning */
-  html {
-    scroll-padding-top: 2rem;
-  }
-  
-  @media (min-width: 640px) {
-    html {
-      scroll-padding-top: 3rem;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    html {
-      scroll-padding-top: 4rem;
-    }
-  }
-  
-  @media (min-width: 1280px) {
-    html {
-      scroll-padding-top: 5rem;
-    }
-  }
+  /* Precise scroll positioning for different viewport sizes */
+  @media (min-width: 640px) { html { scroll-padding-top: clamp(40px, 8vh, 100px); } }
+  @media (min-width: 1024px) { html { scroll-padding-top: clamp(60px, 10vh, 120px); } }
+  @media (min-width: 1280px) { html { scroll-padding-top: clamp(80px, 12vh, 140px); } }
+  @media (min-width: 1536px) { html { scroll-padding-top: clamp(100px, 15vh, 160px); } }
+}
+
+/* Enhanced scroll snap for precise positioning */
+.scroll-snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Smooth scroll container optimization */
+html {
+  scroll-snap-type: y proximity;
 }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+    scroll-snap-type: none;
   }
   
   * {

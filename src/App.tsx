@@ -253,7 +253,7 @@ function App() {
         {palette && (
           <div 
             id="colors" 
-            className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 scroll-mt-16 sm:scroll-mt-20 lg:scroll-mt-24 xl:scroll-mt-28" 
+            className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 scroll-mt-dynamic scroll-snap-section" 
             role="region" 
             aria-label="Generated color palette"
             tabIndex={-1}

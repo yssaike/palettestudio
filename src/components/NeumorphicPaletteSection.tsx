@@ -17,7 +17,7 @@ export const NeumorphicPaletteSection: React.FC<NeumorphicPaletteSectionProps> =
   icon 
 }) => {
   return (
-    <NeumorphicCard className="p-4 sm:p-6 lg:p-8 xl:p-10 2xl:p-12 rounded-2xl sm:rounded-3xl lg:rounded-4xl mb-4 sm:mb-6 lg:mb-8">
+    <NeumorphicCard className="p-4 sm:p-6 lg:p-8 xl:p-10 2xl:p-12 rounded-2xl sm:rounded-3xl lg:rounded-4xl mb-4 sm:mb-6 lg:mb-8 scroll-snap-section">
       <div className="mb-4 sm:mb-6 lg:mb-8 xl:mb-10">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-1 sm:mb-2 lg:mb-3">
           {icon && (
