@@ -51,110 +51,32 @@ function App() {
   }, []);
 
   // Enhanced smooth scroll with viewport awareness and focus management
-  const scrollToColors = useCallback(() => {
-    const colorsSection = document.getElementById('colors');
-    if (!colorsSection) return;
-
-    // Get viewport dimensions for responsive offset calculation
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-    
-    // Calculate responsive offset based on screen size
-    const getResponsiveOffset = () => {
-      if (viewportWidth >= 1536) return 120; // 2xl screens
-      if (viewportWidth >= 1280) return 100; // xl screens
-      if (viewportWidth >= 1024) return 80;  // lg screens
-      if (viewportWidth >= 768) return 60;   // md screens
-      return 40; // sm and mobile screens
-    };
-
-    const offset = getResponsiveOffset();
-    
-    // Check if browser supports smooth scrolling
-    const supportsNativeSmoothScroll = 'scrollBehavior' in document.documentElement.style;
-    
-    if (supportsNativeSmoothScroll) {
-      // Use native smooth scrolling with enhanced options
-      const targetPosition = colorsSection.offsetTop - offset;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-      
-      // Focus management for accessibility
-      setTimeout(() => {
-        colorsSection.focus({ preventScroll: true });
-        colorsSection.setAttribute('tabindex', '-1');
-      }, 600);
-    } else {
-      // Enhanced fallback with easing and viewport awareness
-      const startPosition = window.pageYOffset;
-      const targetPosition = colorsSection.offsetTop - offset;
-      const distance = targetPosition - startPosition;
-      
-      // Adaptive duration based on distance and viewport
-      const baseDuration = 600;
-      const maxDuration = 1000;
-      const minDuration = 300;
-      const distanceFactor = Math.abs(distance) / viewportHeight;
-      const duration = Math.min(maxDuration, Math.max(minDuration, baseDuration * distanceFactor));
-      
-      let startTime: number | null = null;
-
-      // Enhanced easing function for smoother animation
-      const easeInOutQuart = (t: number): number => {
-        return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
-      };
-
-      const animateScroll = (currentTime: number) => {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const easedProgress = easeInOutQuart(progress);
-        
-        window.scrollTo(0, startPosition + distance * easedProgress);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        } else {
-          // Focus management after animation completes
-          colorsSection.focus({ preventScroll: true });
-          colorsSection.setAttribute('tabindex', '-1');
+  const scrollToColors = useCallback(async () => {
+    try {
+      await smoothScrollToElement('colors', {
+        duration: 600,
+        onComplete: () => {
+          // Additional completion logic if needed
         }
-      };
-
-      requestAnimationFrame(animateScroll);
+      });
+    } catch (error) {
+  // Enhanced scroll position monitoring
+      console.error('Scroll to colors failed:', error);
     }
-
-    // Enhanced accessibility announcement
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = 'Navigated to generated color palette section';
-    document.body.appendChild(announcement);
-    
-    // Clean up announcement
-    setTimeout(() => {
-      if (document.body.contains(announcement)) {
-        document.body.removeChild(announcement);
-      }
-    }, 1500);
-  }, []);
+    if (palette) {
+      const cleanup = createScrollMonitor('colors');
+      return cleanup;
+    }
+  }, [palette]);
 
   const generatePalette = useCallback(async () => {
     if (!imageLoaded || isGenerating) return;
     
     setIsGenerating(true);
     try {
-      const generatedPalette = await extractColorsFromImage(currentImage.url);
-      setPalette(generatedPalette);
-      
-      // Enhanced scroll timing with loading state consideration
-      setTimeout(() => {
-        scrollToColors();
-      }, 150);
+      const extractedPalette = await extractColorsFromImage(currentImage.url);
+      setPalette(extractedPalette);
+      setTimeout(() => scrollToColors(), 100);
     } catch (error) {
       console.error('Failed to generate palette:', error);
     } finally {
@@ -162,41 +84,10 @@ function App() {
     }
   }, [currentImage.url, imageLoaded, isGenerating, scrollToColors]);
 
-  // Enhanced keyboard event handlers with better UX
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      // Ignore if user is typing in input fields
-      if (event.target instanceof HTMLInputElement || 
-          event.target instanceof HTMLTextAreaElement ||
-          event.target instanceof HTMLSelectElement) {
-        return;
-      }
-      
-      // Ignore if any modifier keys are pressed
-      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
-        return;
-      }
-      
-      switch (event.key) {
-        case ' ':
-          event.preventDefault();
-          nextImage();
-          break;
-        case 'Enter':
-          event.preventDefault();
-          if (palette) {
-            // If palette exists, scroll to it with enhanced focus
-            scrollToColors();
-          } else if (imageLoaded && !isGenerating) {
-            // Generate palette and auto-scroll
-            generatePalette();
-          }
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    if (imageLoaded && !palette && !isGenerating) {
+      generatePalette();
+    }
   }, [nextImage, generatePalette, palette, scrollToColors, imageLoaded, isGenerating]);
 
   const handleImageLoad = () => {
@@ -253,7 +144,7 @@ function App() {
         {palette && (
           <div 
             id="colors" 
-            className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 scroll-mt-dynamic scroll-snap-section" 
+            className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 2xl:mt-24 scroll-mt-16 sm:scroll-mt-20 lg:scroll-mt-24 xl:scroll-mt-28" 
             role="region" 
             aria-label="Generated color palette"
             tabIndex={-1}
