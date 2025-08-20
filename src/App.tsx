@@ -8,6 +8,7 @@ import { NeumorphicCard } from './components/NeumorphicCard';
 import { ImageSelector } from './components/ImageSelector';
 import { SemanticColors } from './components/SemanticColors';
 import { extractColorsFromImage } from './utils/colorExtractor';
+import { smoothScrollToElement, createScrollMonitor } from './utils/scrollUtils';
 import { natureImages } from './data/images';
 import type { ColorPalette, NatureImage } from './types/palette';
 
